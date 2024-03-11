@@ -57,9 +57,9 @@ section_list = [str(item) for item in section_list]
 
 # PART 2: preprocessing
 # tokenizing (with stemming and lemmatizing)
-#df = pd.read_csv('train.csv')
-#section_list = df['text'].values.tolist()
-#section_list = [str(item) for item in section_list]
+df = pd.read_csv('train.csv')
+section_list = df['text'].values.tolist()
+section_list = [str(item) for item in section_list]
 
 
 def tokenizer_better(text):
