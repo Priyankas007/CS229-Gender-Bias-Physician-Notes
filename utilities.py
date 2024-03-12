@@ -3,6 +3,8 @@ import numpy as np
 
 
 def load_data(xpath, ypath):
+  #xpath 'numpyData_tfidf_16000_unfiltered.json' in final_data
+  #ypath 'sections.csv' in prodata
   with open(xpath, "r") as read_file:
       data = json.load(read_file)
       X = np.array(data["array"])
