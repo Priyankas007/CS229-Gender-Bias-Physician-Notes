@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import tqdm
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoModel
 import torch
@@ -100,12 +101,12 @@ def train_model(save_name, train_loader, val_loader):
   complete_train_acc = []
   complete_test_acc = []
 
-  for epoch in range(3):  # For demonstration, let's train for only 3 epochs
+  for epoch in tqdm.tqdm(range(3)):  # For demonstration, let's train for only 3 epochs
       model.train()
       i = 0
       total_train_loss = 0
       total_train_acc = 0
-      total_f1_acc = 0
+
       for batch in train_loader:
         optimizer.zero_grad()
         input_ids = batch['input_ids'].to(device)
@@ -166,15 +167,13 @@ def evaluate(model, test_loader, criterion):
     n = len(test_loader)
     avg_loss = total_loss / n
     avg_acc = total_acc / len(test_loader.dataset)
-    print(f'Test Loss: {avg_loss}, Test Accuracy: {avg_acc * 100}%, F1:{f1_acc * 100}% ')
+    print(f'Test Loss: {avg_loss}, Test Accuracy: {avg_acc * 100}%')
     return avg_loss, avg_acc
 
 def f1_accuracy(preds, labels):
   pre = np.argmax(preds, axis=1).flatten()
   real = labels.flatten()
   return f1_score(real, pre)
-
-
 
 def main(filepath):
   train_loader, val_loader = make_tokens(filepath, 1000)
