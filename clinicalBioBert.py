@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 import tqdm
 
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoModel
+from transformers import AutoTokenizer, AutoModel
 import torch
 from torch import nn
 from torch.optim import AdamW
@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score
 import re
+import pickle
 
 device = (
     "cuda"
@@ -64,8 +65,11 @@ class ClinicalBioBERTClassifier(nn.Module):
 
 
 def make_tokens(csv_path, n=10000, filter=None):
-  csv_file_path = csv_path
-  df = pd.read_csv(csv_file_path)
+  #csv_file_path = csv_path
+  #df = pd.read_csv(csv_file_path)
+  with open (csv_path, 'rb') as f:
+    df = pickle.load(f)
+  
   df = df.dropna()
   if filter == None:
     df['0'] = df['0'].fillna('').astype(str)
@@ -175,10 +179,11 @@ def f1_accuracy(preds, labels):
   real = labels.flatten()
   return f1_score(real, pre)
 
-def main(filepath):
+def main(filepath, savepath):
   train_loader, val_loader = make_tokens(filepath, 1000)
-  train_model('test', train_loader, val_loader)
+  train_model(savepath, train_loader, val_loader)
 
 if __name__ == "__main__":
   filepath = sys.argv[1]
-  main(filepath)
+  savepath = sys.argv[2]
+  main(filepath, savepath)
